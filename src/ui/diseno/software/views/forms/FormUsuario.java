@@ -6,10 +6,12 @@ package ui.diseno.software.views.forms;
 
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JLabel;
 import ui.diseno.software.views.tabbed.TabbedForm;
 import javax.swing.JOptionPane;
+import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import raven.alerts.MessageAlerts;
 import raven.popup.DefaultOption;
@@ -69,7 +71,7 @@ public class FormUsuario extends TabbedForm {
         lblTitle.putClientProperty(FlatClientProperties.STYLE, ""
                 + "font:bold +5;");
 
-        txtSearch.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Search...");
+        txtSearch.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Buscar...");
         txtSearch.putClientProperty(FlatClientProperties.TEXT_FIELD_LEADING_ICON, new FlatSVGIcon("ui/diseno/software/views/table/icon/search.svg"));
 
         txtSearch.putClientProperty(FlatClientProperties.STYLE, ""
@@ -173,8 +175,18 @@ public class FormUsuario extends TabbedForm {
         lblTitle.setText("USUARIOS");
 
         btnEditar.setText("Editar");
+        btnEditar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditarActionPerformed(evt);
+            }
+        });
 
         btnEliminar.setText("Eliminar");
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarActionPerformed(evt);
+            }
+        });
 
         btnCrear.setText("Crear");
         btnCrear.addActionListener(new java.awt.event.ActionListener() {
@@ -258,15 +270,15 @@ public class FormUsuario extends TabbedForm {
             }
 
         };
-        String action[] = new String[]{"Cancel", "Save"};
-        GlassPanePopup.showPopup(new SimplePopupBorder(create, "Create Employee", action, (pc, i) -> {
+        String action[] = new String[]{"Cancelar", "Guardar"};
+        GlassPanePopup.showPopup(new SimplePopupBorder(create, "Crear nuevo usuario", action, (pc, i) -> {
             if (i == 1) {
                 // save data
 
                 try {
                     service.create(create.getData());
                     pc.closePopup();
-                    Notifications.getInstance().show(Notifications.Type.SUCCESS, "Employee has been created");
+                    Notifications.getInstance().show(Notifications.Type.SUCCESS, "El usuario fue creado con éxito");
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -279,6 +291,115 @@ public class FormUsuario extends TabbedForm {
         }), option);
     }//GEN-LAST:event_btnCrearActionPerformed
 
+    private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
+        // TODO add your handling code here:
+        List<Usuario> list = getSelectedData();
+        if (!list.isEmpty()) {
+
+            if (list.size() == 1) {
+
+                Usuario data = list.get(0);
+                AgregarUsuario create = new AgregarUsuario();
+
+                create.loadData(service, data);
+
+                DefaultOption option = new DefaultOption() {
+                    @Override
+                    public boolean closeWhenClickOutside() {
+                        return true;
+                    }
+
+                };
+                String action[] = new String[]{"Cancelar", "Actualizar"};
+                GlassPanePopup.showPopup(new SimplePopupBorder(create, "Editar Usuario [" + data.getNombre()+ "]", action, (pc, i) -> {
+                    if (i == 1) {
+                        // edit data
+
+                        try {
+                            Usuario dataEdit = create.getData();
+                            dataEdit.setUsuarioId(data.getUsuarioId());
+                            service.edit(dataEdit);
+                            pc.closePopup();
+                            Notifications.getInstance().show(Notifications.Type.SUCCESS, "El usuario fue actualizado con éxito");
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                    } else {
+                        pc.closePopup();
+                    }
+                    loadData();
+
+                }), option);
+
+            } else {
+                Notifications.getInstance().show(Notifications.Type.WARNING, "Por favor selecciona solamente 1 usuario");
+            }
+
+        } else {
+            Notifications.getInstance().show(Notifications.Type.WARNING, "Debes seleccionar 1 usuario");
+        }
+
+    }//GEN-LAST:event_btnEditarActionPerformed
+
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+        // TODO add your handling code here:
+         List<Usuario> list = getSelectedData();
+        if (!list.isEmpty()) {
+            DefaultOption option = new DefaultOption() {
+                @Override
+                public boolean closeWhenClickOutside() {
+                    return true;
+                }
+
+            };
+            String action[] = new String[]{"Cancelar", "Eliminar"};
+            JLabel label = new JLabel("¿Estas seguro que deseas eliminar " + list.size() + " usuario?");
+            label.setBorder(new EmptyBorder(0,25,0,25));
+            GlassPanePopup.showPopup(new SimplePopupBorder(label, "Confirmar cambios", action, (pc, i) -> {
+                if (i == 1) {
+                    // delete data
+
+                    try {
+                        for(Usuario d:list) {
+                            service.delete(d.getUsuarioId());
+                        }
+                        pc.closePopup();
+                        Notifications.getInstance().show(Notifications.Type.SUCCESS, "Usuario eliminado con éxito");
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                } else {
+                    pc.closePopup();
+                }
+                
+                loadData();
+
+            }), option);
+
+        } else {
+
+            Notifications.getInstance().show(Notifications.Type.WARNING, "Por favor, selecciona un usuario para eliminar");
+
+        }
+    }//GEN-LAST:event_btnEliminarActionPerformed
+
+        private List<Usuario> getSelectedData() {
+        List<Usuario> list = new ArrayList<>();
+
+        for (int i = 0; i < table.getRowCount(); i++) {
+            if ((boolean) table.getValueAt(i, 0)) {
+                Usuario data = (Usuario) table.getValueAt(i, 2);
+                list.add(data);
+            }
+        }
+
+        return list;
+    }
+    
     @Override
     public void formOpen() {
         System.out.println("Form Open");

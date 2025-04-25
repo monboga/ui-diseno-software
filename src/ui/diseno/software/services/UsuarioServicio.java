@@ -39,7 +39,7 @@ public class UsuarioServicio {
                 String contrasena = rs.getString("contrasena");
                 Date fechaCreacionUsuario = rs.getDate("fecha_creacion_usuario");
                 int rolId = rs.getInt("roles_id");
-                String nombreRol = rs.getString("nombre");
+                String nombreRol = rs.getString("nombre_rol");
                 list.add(new Usuario(usuarioId, nombre, apellido, nombreUsuario, contrasena,new Rol(rolId, nombreRol) ,fechaCreacionUsuario));
             }
 
@@ -101,43 +101,41 @@ public class UsuarioServicio {
         }
     }
 
-//    public void edit(ModelEmployee data) throws SQLException {
-//        Connection con = null;
-//        PreparedStatement ps = null;
-//        ResultSet rs = null;
-//        try {
-//            con = DatabaseConnection.getInstance().createConnection();
-//            ps = con.prepareStatement("UPDATE employee SET employee_name=?, location=?, date=?, salary=?, description=?, position_id=? WHERE employee_id=? LIMIT 1");
-//            ps.setString(1, data.getName());
-//            ps.setString(2, data.getLocation());
-//            ps.setDate(3, data.getDate());
-//            ps.setDouble(4, data.getSalary());
-//            ps.setString(5, data.getDescription());
-//            ps.setInt(6, data.getPositions().getPositionsId());
-//            ps.setInt(7, data.getEmployeeId());
-//            ps.execute();
-//
-//        } finally {
-//            DatabaseConnection.getInstance().close(ps, con);
-//        }
-//    }
+    public void edit(Usuario data) throws SQLException {
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            con = DatabaseConnection.getInstance().createConnection();
+            ps = con.prepareStatement("UPDATE usuarios SET nombre=?, apellido=?, contrasena=?, roles_id=? WHERE usuario_id=? LIMIT 1");
+            ps.setString(1, data.getNombre());
+            ps.setString(2, data.getApellido());
+            ps.setString(3, data.getContrasena());
+            ps.setInt(4, data.getUsuarioRol().getRolId());
+            ps.setInt(5, data.getUsuarioId());
+            ps.execute();
+
+        } finally {
+            DatabaseConnection.getInstance().close(ps, con);
+        }
+    }
     
-//        public void delete(int id) throws SQLException {
-//        Connection con = null;
-//        PreparedStatement ps = null;
-//        ResultSet rs = null;
-//        try {
-//            con = DatabaseConnection.getInstance().createConnection();
-//            ps = con.prepareStatement("DELETE FROM employee WHERE employee_id=? LIMIT 1");
-//  
-//            ps.setInt(1, id);
-//            
-//            ps.execute();
-//
-//        } finally {
-//            DatabaseConnection.getInstance().close(ps, con);
-//        }
-//    }
+        public void delete(int id) throws SQLException {
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            con = DatabaseConnection.getInstance().createConnection();
+            ps = con.prepareStatement("DELETE FROM usuarios WHERE usuario_id=? LIMIT 1");
+  
+            ps.setInt(1, id);
+            
+            ps.execute();
+
+        } finally {
+            DatabaseConnection.getInstance().close(ps, con);
+        }
+    }
     
     
 
