@@ -18,6 +18,10 @@ import raven.popup.component.PopupCallbackAction;
 import raven.popup.component.PopupController;
 import raven.popup.component.SimplePopupBorder;
 import raven.toast.Notifications;
+import ui.diseno.software.connection.DatabaseConnection;
+import ui.diseno.software.models.Usuario;
+import ui.diseno.software.services.UsuarioServicio;
+import ui.diseno.software.views.modals.AgregarUsuario;
 import ui.diseno.software.views.table.CheckBoxTableHeaderRender;
 import ui.diseno.software.views.table.TableHeaderAlignment;
 
@@ -27,6 +31,8 @@ import ui.diseno.software.views.table.TableHeaderAlignment;
  */
 public class FormUsuario extends TabbedForm {
 
+    private UsuarioServicio service = new UsuarioServicio();
+
     /**
      * Creates new form TestForm
      */
@@ -34,7 +40,7 @@ public class FormUsuario extends TabbedForm {
         initComponents();
         init();
     }
-    
+
     private void init() {
         panel.putClientProperty(FlatClientProperties.STYLE, ""
                 + "arc:25;"
@@ -76,6 +82,29 @@ public class FormUsuario extends TabbedForm {
 
         table.getColumnModel().getColumn(0).setHeaderRenderer(new CheckBoxTableHeaderRender(table, 0));
         table.getTableHeader().setDefaultRenderer(new TableHeaderAlignment(table));
+
+        try {
+            DatabaseConnection.getInstance().connectToDatabase();
+            loadData();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadData() {
+        try {
+            DefaultTableModel model = (DefaultTableModel) table.getModel();
+            if (table.isEditing()) {
+                table.getCellEditor().stopCellEditing();
+            }
+            model.setRowCount(0);
+            List<Usuario> list = service.getAll();
+            for (Usuario d : list) {
+                model.addRow(d.toTableRow(table.getRowCount() + 1));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -148,6 +177,11 @@ public class FormUsuario extends TabbedForm {
         btnEliminar.setText("Eliminar");
 
         btnCrear.setText("Crear");
+        btnCrear.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCrearActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout panelLayout = new javax.swing.GroupLayout(panel);
         panel.setLayout(panelLayout);
@@ -205,12 +239,46 @@ public class FormUsuario extends TabbedForm {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    
+    
     private void txtSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSearchActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtSearchActionPerformed
 
+    private void btnCrearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCrearActionPerformed
+        // TODO add your handling code here:
+        AgregarUsuario create = new AgregarUsuario();
 
-    
+        create.loadData(service, null);
+
+        DefaultOption option = new DefaultOption() {
+            @Override
+            public boolean closeWhenClickOutside() {
+                return true;
+            }
+
+        };
+        String action[] = new String[]{"Cancel", "Save"};
+        GlassPanePopup.showPopup(new SimplePopupBorder(create, "Create Employee", action, (pc, i) -> {
+            if (i == 1) {
+                // save data
+
+                try {
+                    service.create(create.getData());
+                    pc.closePopup();
+                    Notifications.getInstance().show(Notifications.Type.SUCCESS, "Employee has been created");
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            } else {
+                pc.closePopup();
+            }
+            loadData();
+        }), option);
+    }//GEN-LAST:event_btnCrearActionPerformed
+
     @Override
     public void formOpen() {
         System.out.println("Form Open");
