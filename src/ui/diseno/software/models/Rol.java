@@ -5,12 +5,15 @@
 package ui.diseno.software.models;
 
 import java.sql.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
 /**
  *
  * @author Gabriel
  */
 public class Rol {
-    
+
     int rolId;
     String nombreRol;
     Date fechaCreacionRol;
@@ -22,8 +25,6 @@ public class Rol {
         this.rolId = rolId;
         this.nombreRol = nombreRol;
     }
-    
-    
 
     public Rol(int rolId, String nombreRol, Date fechaCreacionRol) {
         this.rolId = rolId;
@@ -55,11 +56,14 @@ public class Rol {
         this.fechaCreacionRol = fechaCreacionRol;
     }
 
+    public Object[] toTableRow(int rowNum) {
+        DateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+        return new Object[]{false, rowNum, this, fechaCreacionRol == null ? "" : df.format(fechaCreacionRol)};
+    }
+
     @Override
     public String toString() {
         return nombreRol;
     }
-    
-    
-    
+
 }

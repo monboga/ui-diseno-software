@@ -25,7 +25,7 @@ public class AgregarUsuario extends javax.swing.JPanel {
     public void loadData(UsuarioServicio service, Usuario data) {
         try {
 
-            for (Rol rol : service.getServicePositions().getAll()) {
+            for (Rol rol : service.getServicePositions().getRolName()) {
                 comboRol.addItem(rol);
                 if (data != null && data.getUsuarioRol().getRolId() == rol.getRolId()) {
                     comboRol.setSelectedItem(rol);
