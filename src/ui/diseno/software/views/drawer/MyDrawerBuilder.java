@@ -15,6 +15,7 @@ import raven.drawer.component.menu.MenuEvent;
 import raven.drawer.component.menu.MenuValidation;
 import raven.drawer.component.menu.SimpleMenuOption;
 import raven.swing.AvatarIcon;
+import ui.diseno.software.views.forms.FormMarcas;
 import ui.diseno.software.views.forms.FormRol;
 
 /**
@@ -61,6 +62,12 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder{
                                 WindowsTabbed.getInstance().addTab("Adiministar Usuarios", new FormUsuario());
                             } else if (subIndex == 2) {
                                 WindowsTabbed.getInstance().addTab("Administrar Roles", new FormRol());
+                            }
+                        } else if (index == 2) {
+                            if ( subIndex == 3) {
+                                
+                                WindowsTabbed.getInstance().addTab("Administrar Marcas", new FormMarcas());
+                                
                             }
                         }
                         System.out.println("Menu selected " + index + " " + subIndex);
