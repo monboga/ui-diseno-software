@@ -91,7 +91,7 @@ public class MarcaServicio {
             con = DatabaseConnection.getInstance().createConnection();
             ps = con.prepareStatement("UPDATE marcas SET nombre_marca=? WHERE roles_id=? LIMIT 1");
             ps.setString(1, data.getNombreMarca());
-            ps.setInt(5, data.getMarcaId());
+            ps.setInt(2, data.getMarcaId());
             ps.execute();
 
         } finally {

@@ -90,7 +90,7 @@ public class RolServicio {
             con = DatabaseConnection.getInstance().createConnection();
             ps = con.prepareStatement("UPDATE roles SET nombre=? WHERE roles_id=? LIMIT 1");
             ps.setString(1, data.getNombreRol());
-            ps.setInt(5, data.getRolId());
+            ps.setInt(2, data.getRolId());
             ps.execute();
 
         } finally {
