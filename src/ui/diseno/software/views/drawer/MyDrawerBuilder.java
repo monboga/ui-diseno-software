@@ -16,6 +16,7 @@ import raven.drawer.component.menu.SimpleMenuOption;
 import raven.swing.AvatarIcon;
 import ui.diseno.software.views.forms.FormCategorias;
 import ui.diseno.software.views.forms.FormMarcas;
+import ui.diseno.software.views.forms.FormProductos;
 import ui.diseno.software.views.forms.FormRol;
 
 /**
@@ -67,6 +68,7 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
                             if (subIndex == 1) {
                                 
                                 // VENTANA DE PRODUCTOS
+                                WindowsTabbed.getInstance().addTab("Administrar Productos", new FormProductos());
 
                             } else if (subIndex == 2) {
                                 
